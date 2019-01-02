@@ -12,6 +12,7 @@ import { VelocityTracker } from "../input";
 
 const HEADER_HEIGHT = 104;
 const KNOB_HEIGHT = 24;
+const WEEK_ROW_HEIGHT = 45;
 
 //Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
@@ -93,6 +94,9 @@ export default class AgendaView extends Component {
     this.viewWidth = windowSize.width;
     this.scrollTimeout = undefined;
     this.headerState = "idle";
+    this.animationOffset = this.animationOffset(
+      parseDate(this.props.selected) || XDate(true)
+    );
     this.state = {
       scrollY: new Animated.Value(0),
       calendarIsReady: false,
@@ -114,6 +118,9 @@ export default class AgendaView extends Component {
   }
 
   calendarOffset() {
+    //if vertical
+    //90 - this.viewHeight/2
+    //if horizontal
     return 0;
   }
 
@@ -302,14 +309,29 @@ export default class AgendaView extends Component {
     const newDate = parseDate(day);
     const withAnimation = dateutils.sameMonth(newDate, this.state.selectedDay);
     this.calendar.scrollToDay(day, this.calendarOffset(), withAnimation);
+    this.animationOffset = this.countAnimationOffset(newDate);
     this.setState({
-      selectedDay: parseDate(day)
+      selectedDay: newDate
     });
 
     if (this.props.onDayChange) {
       this.props.onDayChange(xdateToData(newDate));
     }
   }
+  countAnimationOffset = day => {
+    let scrollAmount = 0;
+    //for horizontal list
+    let week = 0;
+    const days = dateutils.page(day, this.props.firstDay);
+    for (let i = 0; i < days.length; i++) {
+      week = Math.floor(i / 7) + 1; //to refactor
+      if (dateutils.sameDate(days[i], day)) {
+        scrollAmount += WEEK_ROW_HEIGHT * 2 * week;
+        break;
+      }
+    }
+    this.animationOffset = scrollAmount;
+  };
 
   generateMarkings() {
     let markings = this.props.markedDates;
@@ -362,7 +384,7 @@ export default class AgendaView extends Component {
 
     const contentTranslate = this.state.scrollY.interpolate({
       inputRange: [0, agendaHeight],
-      outputRange: [0, agendaHeight / 2],
+      outputRange: [0, agendaHeight - this.animationOffset / 2],
       extrapolate: "clamp"
     });
 
@@ -440,7 +462,6 @@ export default class AgendaView extends Component {
               removeClippedSubviews={this.props.removeClippedSubviews}
               onDayPress={this._chooseDayFromCalendar.bind(this)}
               scrollingEnabled={this.state.calendarScrollable}
-              hideExtraDays={this.state.calendarScrollable}
               firstDay={this.props.firstDay}
               monthFormat={this.props.monthFormat}
               pastScrollRange={this.props.pastScrollRange}
