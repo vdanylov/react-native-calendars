@@ -94,15 +94,15 @@ export default class AgendaView extends Component {
     this.viewWidth = windowSize.width;
     this.scrollTimeout = undefined;
     this.headerState = "idle";
-    this.animationOffset = this.animationOffset(
-      parseDate(this.props.selected) || XDate(true)
-    );
     this.state = {
       scrollY: new Animated.Value(0),
       calendarIsReady: false,
       calendarScrollable: false,
       firstResevationLoad: false,
       selectedDay: parseDate(this.props.selected) || XDate(true),
+      animationOffset: this.countAnimationOffset(
+        parseDate(this.props.selected) || XDate(true)
+      ),
       topDay: parseDate(this.props.selected) || XDate(true)
     };
     this.currentMonth = this.state.selectedDay.clone();
@@ -263,7 +263,8 @@ export default class AgendaView extends Component {
     const day = parseDate(d);
     this.setState({
       calendarScrollable: false,
-      selectedDay: day.clone()
+      selectedDay: day.clone(),
+      animationOffset: this.countAnimationOffset(day.clone())
     });
     if (this.props.onCalendarToggled) {
       this.props.onCalendarToggled(false);
@@ -309,9 +310,9 @@ export default class AgendaView extends Component {
     const newDate = parseDate(day);
     const withAnimation = dateutils.sameMonth(newDate, this.state.selectedDay);
     this.calendar.scrollToDay(day, this.calendarOffset(), withAnimation);
-    this.animationOffset = this.countAnimationOffset(newDate);
     this.setState({
-      selectedDay: newDate
+      selectedDay: newDate,
+      animationOffset: this.countAnimationOffset(newDate)
     });
 
     if (this.props.onDayChange) {
@@ -330,7 +331,7 @@ export default class AgendaView extends Component {
         break;
       }
     }
-    this.animationOffset = scrollAmount;
+    return scrollAmount;
   };
 
   generateMarkings() {
@@ -384,7 +385,7 @@ export default class AgendaView extends Component {
 
     const contentTranslate = this.state.scrollY.interpolate({
       inputRange: [0, agendaHeight],
-      outputRange: [0, agendaHeight - this.animationOffset / 2],
+      outputRange: [0, agendaHeight - this.state.animationOffset / 2],
       extrapolate: "clamp"
     });
 
