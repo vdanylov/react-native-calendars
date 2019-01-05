@@ -94,6 +94,7 @@ export default class AgendaView extends Component {
     this.viewWidth = windowSize.width;
     this.scrollTimeout = undefined;
     this.headerState = "idle";
+    this.prevSnapY = 1;
     this.state = {
       scrollY: new Animated.Value(0),
       calendarIsReady: false,
@@ -179,9 +180,13 @@ export default class AgendaView extends Component {
     const projectedY = currentY + this.knobTracker.estimateSpeed() * 250; /*ms*/
     const maxY = this.initialScrollPadPosition();
     const snapY = projectedY > maxY / 2 ? maxY : 0;
+    if (snapY === this.prevSnapY) return;
+    this.prevSnapY = snapY;
     this.setScrollPadPosition(snapY, true);
     if (snapY === 0) {
       this.enableCalendarScrolling();
+    } else {
+      this._goBackOnCalendarClose();
     }
   }
 
@@ -258,7 +263,20 @@ export default class AgendaView extends Component {
   _chooseDayFromCalendar(d) {
     this.chooseDay(d, !this.state.calendarScrollable);
   }
-
+  _goBackOnCalendarClose = () => {
+    this.setState(
+      {
+        calendarScrollable: false
+      },
+      () => {
+        this.calendar.scrollToDay(
+          this.state.selectedDay,
+          this.calendarOffset() + 1,
+          true
+        );
+      }
+    );
+  };
   chooseDay(d, optimisticScroll) {
     const day = parseDate(d);
     this.setState({
@@ -404,7 +422,9 @@ export default class AgendaView extends Component {
     const shouldAllowDragging =
       !this.props.hideKnob && !this.state.calendarScrollable;
     const scrollPadPosition =
-      (shouldAllowDragging ? HEADER_HEIGHT : 0) - KNOB_HEIGHT;
+      HEADER_HEIGHT +
+      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT * 6) -
+      KNOB_HEIGHT;
 
     const scrollPadStyle = {
       position: "absolute",
@@ -422,7 +442,7 @@ export default class AgendaView extends Component {
       ) : (
         <View style={this.styles.knob} />
       );
-      knob = this.state.calendarScrollable ? null : (
+      knob = (
         <View style={this.styles.knobContainer}>
           <View ref={c => (this.knob = c)}>{knobView}</View>
         </View>
