@@ -1,20 +1,16 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {
-  TouchableWithoutFeedback,
-  Text,
-  View
-} from 'react-native';
-import {shouldUpdate} from '../../../component-updater';
-import isEqual from 'lodash.isequal';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { TouchableWithoutFeedback, Text, View } from "react-native";
+import { shouldUpdate } from "../../../component-updater";
+import isEqual from "lodash.isequal";
 
-import * as defaultStyle from '../../../style';
-import styleConstructor from './style';
+import * as defaultStyle from "../../../style";
+import styleConstructor from "./style";
 
 class Day extends Component {
   static propTypes = {
     // TODO: selected + disabled props should be removed
-    state: PropTypes.oneOf(['selected', 'disabled', 'today', '']),
+    state: PropTypes.oneOf(["selected", "disabled", "today", ""]),
 
     // Specify theme properties to override specific styles for calendar parts. Default = {}
     theme: PropTypes.object,
@@ -24,12 +20,12 @@ class Day extends Component {
     onLongPress: PropTypes.func,
     date: PropTypes.object,
 
-    markingExists: PropTypes.bool,
+    markingExists: PropTypes.bool
   };
 
   constructor(props) {
     super(props);
-    this.theme = {...defaultStyle, ...(props.theme || {})};
+    this.theme = { ...defaultStyle, ...(props.theme || {}) };
     this.style = styleConstructor(props.theme);
     this.markingStyle = this.getDrawingStyle(props.marking || []);
     this.onDayPress = this.onDayPress.bind(this);
@@ -52,11 +48,16 @@ class Day extends Component {
       return true;
     }
 
-    return shouldUpdate(this.props, nextProps, ['state', 'children', 'onPress', 'onLongPress']);
+    return shouldUpdate(this.props, nextProps, [
+      "state",
+      "children",
+      "onPress",
+      "onLongPress"
+    ]);
   }
 
   getDrawingStyle(marking) {
-    const defaultStyle = {textStyle: {}};
+    const defaultStyle = { textStyle: {} };
     if (!marking) {
       return defaultStyle;
     }
@@ -65,28 +66,28 @@ class Day extends Component {
     } else if (marking.selected) {
       defaultStyle.textStyle.color = this.theme.selectedDayTextColor;
     }
-    const resultStyle = ([marking]).reduce((prev, next) => {
+    const resultStyle = [marking].reduce((prev, next) => {
       if (next.quickAction) {
         if (next.first || next.last) {
           prev.containerStyle = this.style.firstQuickAction;
           prev.textStyle = this.style.firstQuickActionText;
           if (next.endSelected && next.first && !next.last) {
-            prev.rightFillerStyle = '#c1e4fe';
+            prev.rightFillerStyle = "#c1e4fe";
           } else if (next.endSelected && next.last && !next.first) {
-            prev.leftFillerStyle = '#c1e4fe';
+            prev.leftFillerStyle = "#c1e4fe";
           }
         } else if (!next.endSelected) {
           prev.containerStyle = this.style.quickAction;
           prev.textStyle = this.style.quickActionText;
         } else if (next.endSelected) {
-          prev.leftFillerStyle = '#c1e4fe';
-          prev.rightFillerStyle = '#c1e4fe';
+          prev.leftFillerStyle = "#c1e4fe";
+          prev.rightFillerStyle = "#c1e4fe";
         }
         return prev;
       }
 
       const color = next.color;
-      if (next.status === 'NotAvailable') {
+      if (next.status === "NotAvailable") {
         prev.textStyle = this.style.naText;
       }
       if (next.startingDay) {
@@ -120,9 +121,9 @@ class Day extends Component {
     let fillerStyle = {};
     let fillers;
 
-    if (this.props.state === 'disabled') {
+    if (this.props.state === "disabled") {
       textStyle.push(this.style.disabledText);
-    } else if (this.props.state === 'today') {
+    } else if (this.props.state === "today") {
       containerStyle.push(this.style.today);
       textStyle.push(this.style.todayText);
     }
@@ -167,10 +168,10 @@ class Day extends Component {
           backgroundColor: flags.endingDay.color
         });
       } else if (flags.day) {
-        leftFillerStyle = {backgroundColor: flags.day.color};
-        rightFillerStyle = {backgroundColor: flags.day.color};
+        leftFillerStyle = { backgroundColor: flags.day.color };
+        rightFillerStyle = { backgroundColor: flags.day.color };
         // #177 bug
-        fillerStyle = {backgroundColor: flags.day.color};
+        fillerStyle = { backgroundColor: flags.day.color };
       } else if (flags.endingDay && flags.startingDay) {
         rightFillerStyle = {
           backgroundColor: this.theme.calendarBackground
@@ -185,8 +186,8 @@ class Day extends Component {
 
       fillers = (
         <View style={[this.style.fillers, fillerStyle]}>
-          <View style={[this.style.leftFiller, leftFillerStyle]}/>
-          <View style={[this.style.rightFiller, rightFillerStyle]}/>
+          <View style={[this.style.leftFiller, leftFillerStyle]} />
+          <View style={[this.style.rightFiller, rightFillerStyle]} />
         </View>
       );
     }
@@ -194,11 +195,28 @@ class Day extends Component {
     return (
       <TouchableWithoutFeedback
         onPress={this.onDayPress}
-        onLongPress={this.onDayLongPress}>
+        onLongPress={this.onDayLongPress}
+      >
         <View style={this.style.wrapper}>
           {fillers}
-          <View style={containerStyle}>
-            <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
+          <View
+            style={[
+              containerStyle,
+              this.props.marking.selected
+                ? {
+                    borderRadius: 16,
+                    elevation: 1,
+                    shadowOffset: { width: 5, height: 5 },
+                    shadowColor: "grey",
+                    shadowOpacity: 0.5,
+                    shadowRadius: 10
+                  }
+                : null
+            ]}
+          >
+            <Text allowFontScaling={false} style={textStyle}>
+              {String(this.props.children)}
+            </Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
