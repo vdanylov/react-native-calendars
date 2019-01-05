@@ -14,7 +14,7 @@ import {AGENDA_CALENDAR_KNOB} from '../testIDs';
 
 const HEADER_HEIGHT = 104;
 const KNOB_HEIGHT = 24;
-const WEEK_ROW_HEIGHT = 45;
+const WEEK_ROW_HEIGHT = 47;
 
 //Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
