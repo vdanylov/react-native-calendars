@@ -546,8 +546,7 @@ export default class AgendaView extends Component {
         >
           <View
             style={{
-              height: agendaHeight + KNOB_HEIGHT,
-              backgroundColor: "red"
+              height: agendaHeight + KNOB_HEIGHT
             }}
             onLayout={this.onScrollPadLayout}
           />
