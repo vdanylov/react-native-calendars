@@ -10,9 +10,9 @@ import ReservationsList from "./reservation-list";
 import styleConstructor from "./style";
 import { VelocityTracker } from "../input";
 
-const HEADER_HEIGHT = 104;
+const HEADER_HEIGHT = 140;
 const KNOB_HEIGHT = 24;
-const WEEK_ROW_HEIGHT = 47;
+const WEEK_ROW_HEIGHT = 49;
 
 //Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
@@ -343,9 +343,9 @@ export default class AgendaView extends Component {
     let week = 0;
     const days = dateutils.page(day, this.props.firstDay);
     for (let i = 0; i < days.length; i++) {
-      week = Math.floor(i / 7) + 1; //to refactor
+      week = Math.floor(i / 7);
       if (dateutils.sameDate(days[i], day)) {
-        scrollAmount += WEEK_ROW_HEIGHT * 2 * week;
+        scrollAmount += WEEK_ROW_HEIGHT * 2 * week + 10;
         break;
       }
     }
@@ -423,7 +423,7 @@ export default class AgendaView extends Component {
       !this.props.hideKnob && !this.state.calendarScrollable;
     const scrollPadPosition =
       HEADER_HEIGHT +
-      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT * 6) -
+      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT * 5) -
       KNOB_HEIGHT;
 
     const scrollPadStyle = {
@@ -506,16 +506,26 @@ export default class AgendaView extends Component {
               numberOfLines={1}
             />
           )}
-          {weekDaysNames.map((day, index) => (
-            <Text
-              allowFontScaling={false}
-              key={day + index}
-              style={this.styles.weekday}
-              numberOfLines={1}
-            >
-              {day}
-            </Text>
-          ))}
+
+          <Text
+            allowFontScaling={false}
+            numberOfLines={1}
+            style={this.styles.monthName}
+          >
+            {this.state.selectedDay.toString("MMMM")}
+          </Text>
+          <View style={this.styles.weekdaysWrapper}>
+            {weekDaysNames.map((day, index) => (
+              <Text
+                allowFontScaling={false}
+                key={day + index}
+                style={this.styles.weekday}
+                numberOfLines={1}
+              >
+                {day}
+              </Text>
+            ))}
+          </View>
         </Animated.View>
         <Animated.ScrollView
           ref={c => (this.scrollPad = c)}
@@ -535,7 +545,10 @@ export default class AgendaView extends Component {
           )}
         >
           <View
-            style={{ height: agendaHeight + KNOB_HEIGHT }}
+            style={{
+              height: agendaHeight + KNOB_HEIGHT,
+              backgroundColor: "red"
+            }}
             onLayout={this.onScrollPadLayout}
           />
         </Animated.ScrollView>
