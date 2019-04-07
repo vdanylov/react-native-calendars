@@ -11,6 +11,7 @@ import UnitDay from './day/period';
 import MultiDotDay from './day/multi-dot';
 import MultiPeriodDay from './day/multi-period';
 import SingleDay from './day/custom';
+import CustomPeriodDay from "./day/custom-period";
 import CalendarHeader from './header';
 import shouldComponentUpdate from './updater';
 import {SELECT_DATE_SLOT} from '../testIDs';
@@ -105,6 +106,7 @@ class Calendar extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const current = parseDate(nextProps.current);
+    const current = parseDate(nextProps.current);
     if (current && current.toString('yyyy MM') !== this.state.currentMonth.toString('yyyy MM')) {
       this.setState({
         currentMonth: current.clone()
@@ -113,30 +115,40 @@ class Calendar extends Component {
   }
 
   updateMonth(day, doNotTriggerListeners) {
-    if (day.toString('yyyy MM') === this.state.currentMonth.toString('yyyy MM')) {
+    if (
+      day.toString("yyyy MM") === this.state.currentMonth.toString("yyyy MM")
+    ) {
       return;
     }
-    this.setState({
-      currentMonth: day.clone()
-    }, () => {
-      if (!doNotTriggerListeners) {
-        const currMont = this.state.currentMonth.clone();
-        if (this.props.onMonthChange) {
-          this.props.onMonthChange(xdateToData(currMont));
-        }
-        if (this.props.onVisibleMonthsChange) {
-          this.props.onVisibleMonthsChange([xdateToData(currMont)]);
+    this.setState(
+      {
+        currentMonth: day.clone()
+      },
+      () => {
+        if (!doNotTriggerListeners) {
+          const currMont = this.state.currentMonth.clone();
+          if (this.props.onMonthChange) {
+            this.props.onMonthChange(xdateToData(currMont));
+          }
+          if (this.props.onVisibleMonthsChange) {
+            this.props.onVisibleMonthsChange([xdateToData(currMont)]);
+          }
         }
       }
-    });
+    );
   }
 
   _handleDayInteraction(date, interaction) {
     const day = parseDate(date);
     const minDate = parseDate(this.props.minDate);
     const maxDate = parseDate(this.props.maxDate);
-    if (!(minDate && !dateutils.isGTE(day, minDate)) && !(maxDate && !dateutils.isLTE(day, maxDate))) {
-      const shouldUpdateMonth = this.props.disableMonthChange === undefined || !this.props.disableMonthChange;
+    if (
+      !(minDate && !dateutils.isGTE(day, minDate)) &&
+      !(maxDate && !dateutils.isLTE(day, maxDate))
+    ) {
+      const shouldUpdateMonth =
+        this.props.disableMonthChange === undefined ||
+        !this.props.disableMonthChange;
       if (shouldUpdateMonth) {
         this.updateMonth(day);
       }
@@ -161,19 +173,25 @@ class Calendar extends Component {
   renderDay(day, id) {
     const minDate = parseDate(this.props.minDate);
     const maxDate = parseDate(this.props.maxDate);
-    let state = '';
+    let state = "";
     if (this.props.disabledByDefault) {
-      state = 'disabled';
-    } else if ((minDate && !dateutils.isGTE(day, minDate)) || (maxDate && !dateutils.isLTE(day, maxDate))) {
-      state = 'disabled';
+      state = "disabled";
+    } else if (
+      (minDate && !dateutils.isGTE(day, minDate)) ||
+      (maxDate && !dateutils.isLTE(day, maxDate))
+    ) {
+      state = "disabled";
     } else if (!dateutils.sameMonth(day, this.state.currentMonth)) {
-      state = 'disabled';
+      state = "disabled";
     } else if (dateutils.sameDate(day, XDate())) {
-      state = 'today';
+      state = "today";
     }
 
-    if (!dateutils.sameMonth(day, this.state.currentMonth) && this.props.hideExtraDays) {
-      return (<View key={id} style={{flex: 1}}/>);
+    if (
+      !dateutils.sameMonth(day, this.state.currentMonth) &&
+      this.props.hideExtraDays
+    ) {
+      return <View key={id} style={{ flex: 1 }} />;
     }
 
     const DayComp = this.getDayComponent();
@@ -182,7 +200,7 @@ class Calendar extends Component {
     const accessibilityLabel = `${state === 'today' ? 'today' : ''} ${day.toString('dddd MMMM d')} ${this.getMarkingLabel(day)}`;
 
     return (
-      <View style={{flex: 1, alignItems: 'center'}} key={id}>
+      <View style={{ flex: 1, alignItems: "center" }} key={id}>
         <DayComp
           testID={`${SELECT_DATE_SLOT}-${dateAsObject.dateString}`}
           state={state}
@@ -234,16 +252,18 @@ class Calendar extends Component {
     }
 
     switch (this.props.markingType) {
-    case 'period':
-      return UnitDay;
-    case 'multi-dot':
-      return MultiDotDay;
-    case 'multi-period':
-      return MultiPeriodDay;
-    case 'custom':
-      return SingleDay;
-    default:
-      return Day;
+      case "period":
+        return UnitDay;
+      case "multi-dot":
+        return MultiDotDay;
+      case "multi-period":
+        return MultiPeriodDay;
+      case "custom":
+        return SingleDay;
+      case "custom-period":
+        return CustomPeriodDay;
+      default:
+        return Day;
     }
   }
 
@@ -283,7 +303,11 @@ class Calendar extends Component {
       week.unshift(this.renderWeekNumber(days[days.length - 1].getWeek()));
     }
 
-    return (<View style={this.style.week} key={id}>{week}</View>);
+    return (
+      <View style={this.style.week} key={id}>
+        {week}
+      </View>
+    );
   }
 
   render() {
@@ -296,9 +320,16 @@ class Calendar extends Component {
     let indicator;
     const current = parseDate(this.props.current);
     if (current) {
-      const lastMonthOfDay = current.clone().addMonths(1, true).setDate(1).addDays(-1).toString('yyyy-MM-dd');
-      if (this.props.displayLoadingIndicator &&
-          !(this.props.markedDates && this.props.markedDates[lastMonthOfDay])) {
+      const lastMonthOfDay = current
+        .clone()
+        .addMonths(1, true)
+        .setDate(1)
+        .addDays(-1)
+        .toString("yyyy-MM-dd");
+      if (
+        this.props.displayLoadingIndicator &&
+        !(this.props.markedDates && this.props.markedDates[lastMonthOfDay])
+      ) {
         indicator = true;
       }
     }
@@ -330,7 +361,8 @@ class Calendar extends Component {
           disableArrowRight={this.props.disableArrowRight}
         />
         <View style={this.style.monthView}>{weeks}</View>
-      </View>);
+      </View>
+    );
   }
 }
 
