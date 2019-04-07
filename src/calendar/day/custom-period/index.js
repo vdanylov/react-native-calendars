@@ -1,8 +1,13 @@
 import React, { PureComponent } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import styles from "./style";
+import styleConstructor from "./style";
 
 class Day extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = styleConstructor(props.theme);
+  }
+
   render() {
     const {
       state,
@@ -15,28 +20,28 @@ class Day extends PureComponent {
 
     return (
       <TouchableOpacity onPress={() => onPress(date.dateString)}>
-        <View style={styles.dayWrapper}>
+        <View style={this.style.dayWrapper}>
           <View
             style={[
-              styles.background,
-              selected && styles.backgroundSelected,
-              startingDay && styles.backgroundStartingDay,
-              endingDay && styles.backgroundEndingDay
+              this.style.background,
+              selected && this.style.backgroundSelected,
+              startingDay && this.style.backgroundStartingDay,
+              endingDay && this.style.backgroundEndingDay
             ]}
           />
           <View
             style={[
-              styles.textWrapper,
-              singleDay && styles.textWrapperSingleDay,
-              today && styles.textWrapperToday
+              this.style.textWrapper,
+              singleDay && this.style.textWrapperSingleDay,
+              today && this.style.textWrapperToday
             ]}
           >
             <Text
               style={[
-                styles.text,
+                this.style.text,
                 isSelectedInAnyOption
-                  ? styles.textSelected
-                  : styles.textNotSelected
+                  ? this.style.textSelected
+                  : this.style.textNotSelected
               ]}
             >
               {date.day}
