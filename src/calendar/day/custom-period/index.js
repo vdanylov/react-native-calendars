@@ -19,7 +19,10 @@ class Day extends PureComponent {
       selected || startingDay || endingDay || today || singleDay;
 
     return (
-      <TouchableOpacity onPress={() => onPress(date.dateString)}>
+      <TouchableOpacity
+        onPress={() => onPress(date.dateString)}
+        style={this.style.dayWrapper}
+      >
         <View style={this.style.dayWrapper}>
           <View
             style={[

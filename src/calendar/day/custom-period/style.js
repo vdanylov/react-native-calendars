@@ -7,17 +7,15 @@ export default function styleConstructor(theme = {}) {
   const appStyle = { ...defaultStyle, ...theme };
   return StyleSheet.create({
     dayWrapper: {
-      height: 34,
-      width: 50,
       alignItems: "center",
-      justifyContent: "center"
+      alignSelf: "stretch"
     },
     background: {
       position: "absolute",
+      right: 0,
       top: 0,
       left: 0,
       height: 34,
-      width: 50,
       backgroundColor: "white"
     },
     backgroundSelected: {
