@@ -44,7 +44,8 @@ class Day extends PureComponent {
                 this.style.text,
                 isSelectedInAnyOption
                   ? this.style.textSelected
-                  : this.style.textNotSelected
+                  : this.style.textNotSelected,
+                today && this.style.textToday
               ]}
             >
               {date.day}
