@@ -51,7 +51,7 @@ export default function styleConstructor(theme = {}) {
         height: 0
       },
       shadowRadius: 12,
-      elevation: 1
+      elevation: 3
     },
     text: {
       fontSize: 14,
@@ -62,6 +62,10 @@ export default function styleConstructor(theme = {}) {
     },
     textNotSelected: {
       color: "rgb(155,154,163)"
+    },
+    textToday: {
+      fontSize: 18,
+      fontWeight: "700"
     },
     ...(theme[STYLESHEET_ID] || {})
   });
