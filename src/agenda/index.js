@@ -107,6 +107,7 @@ export default class AgendaView extends Component {
     this.headerState = "idle";
     this.prevSnapY = 1;
     this.state = {
+      currentVisibleMonth: "",
       scrollY: new Animated.Value(0),
       calendarIsReady: false,
       calendarScrollable: false,
@@ -206,9 +207,9 @@ export default class AgendaView extends Component {
   }
 
   onVisibleMonthsChange(months) {
-    if (this.props.onVisibleMonthsChange) {
-      this.props.onVisibleMonthsChange(months);
-    }
+    this.setState({
+      currentVisibleMonth: parseDate(months[0]).toString("MMMM")
+    });
     if (this.props.items && !this.state.firstResevationLoad) {
       clearTimeout(this.scrollTimeout);
       this.scrollTimeout = setTimeout(() => {
@@ -370,15 +371,15 @@ export default class AgendaView extends Component {
   countAnimationOffset = day => {
     let scrollAmount = 0;
     //for horizontal list
-    let week = 0;
-    const days = dateutils.page(day, this.props.firstDay);
-    for (let i = 0; i < days.length; i++) {
-      week = Math.floor(i / 7);
-      if (dateutils.sameDate(days[i], day)) {
-        scrollAmount += WEEK_ROW_HEIGHT * 2 * week + 10;
-        break;
-      }
-    }
+    // let week = 0;
+    // const days = dateutils.page(day, this.props.firstDay);
+    // for (let i = 0; i < days.length; i++) {
+    //   week = Math.floor(i / 7);
+    //   if (dateutils.sameDate(days[i], day)) {
+    //     scrollAmount += WEEK_ROW_HEIGHT * 2 * week + 10;
+    //     break;
+    //   }
+    // }
     return scrollAmount;
   };
 
@@ -401,19 +402,7 @@ export default class AgendaView extends Component {
   render() {
     const agendaHeight = this.initialScrollPadPosition();
     const weekDaysNames = dateutils.weekDayNames(this.props.firstDay);
-    
-    const weekdaysStyle = [this.styles.weekdays, {
-      opacity: this.state.scrollY.interpolate({
-        inputRange: [agendaHeight - HEADER_HEIGHT, agendaHeight],
-        outputRange: [0, 1],
-        extrapolate: 'clamp'
-      }),
-      transform: [{translateY: this.state.scrollY.interpolate({
-        inputRange: [Math.max(0, agendaHeight - HEADER_HEIGHT), agendaHeight],
-        outputRange: [-HEADER_HEIGHT, 0],
-        extrapolate: 'clamp'
-      })}]
-    }];
+    const weekdaysStyle = [this.styles.weekdays];
 
     const headerTranslate = this.state.scrollY.interpolate({
       inputRange: [0, agendaHeight],
@@ -436,13 +425,13 @@ export default class AgendaView extends Component {
       // limit header height until everything is setup for calendar dragging
       headerStyle.push({ height: 0 });
       // fill header with appStyle.calendarBackground background to reduce flickering
-      weekdaysStyle.push({ height: HEADER_HEIGHT });
+      // weekdaysStyle.push({ height: HEADER_HEIGHT });
     }
 
     const shouldAllowDragging = !this.props.hideKnob && !this.state.calendarScrollable;
     const scrollPadPosition =
       HEADER_HEIGHT +
-      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT * 5) -
+      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT) /* * 5*/ -
       KNOB_HEIGHT;
 
     const scrollPadStyle = {
@@ -477,6 +466,7 @@ export default class AgendaView extends Component {
         <Animated.View style={headerStyle}>
           <Animated.View style={{flex:1, transform: [{translateY: contentTranslate}]}}>
             <CalendarList
+              horizontalWeeks={this.props.horizontal}
               onLayout={() => {
                 this.calendar.scrollToDay(
                   this.state.selectedDay.clone(),
@@ -484,6 +474,7 @@ export default class AgendaView extends Component {
                   false
                 );
               }}
+              selected={this.props.selected}
               horizontal
               pagingEnabled
               hideExtraDays={false}
@@ -528,7 +519,7 @@ export default class AgendaView extends Component {
             numberOfLines={1}
             style={this.styles.monthName}
           >
-            {this.state.selectedDay.toString("MMMM")}
+            {this.state.currentVisibleMonth}
           </Text>
           <View style={this.styles.weekdaysWrapper}>
             {weekDaysNames.map((day, index) => (
