@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ViewPropTypes } from "react-native";
+import { View, ViewPropTypes, ScrollView, Dimensions } from "react-native";
 import PropTypes from "prop-types";
 
 import XDate from "xdate";
@@ -15,9 +15,10 @@ import CustomPeriodDay from "./day/custom-period";
 import CalendarHeader from "./header";
 import shouldComponentUpdate from "./updater";
 
+const { width } = Dimensions.get("window");
 //Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
-
+const rowWidth = width - 30;
 const EmptyArray = [];
 
 class Calendar extends Component {
@@ -95,6 +96,9 @@ class Calendar extends Component {
     this.longPressDay = this.longPressDay.bind(this);
     this.shouldComponentUpdate = shouldComponentUpdate;
   }
+  componentDidMount() {
+    this.scrollToChoosenDay();
+  }
 
   componentWillReceiveProps(nextProps) {
     const current = parseDate(nextProps.current);
@@ -108,6 +112,26 @@ class Calendar extends Component {
       });
     }
   }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!prevProps.horizontalWeeks && this.props.horizontalWeeks) {
+      this.scrollToChoosenDay();
+    }
+  }
+
+  scrollToChoosenDay = () => {
+    const days = dateutils.page(this.state.currentMonth, this.props.firstDay);
+
+    const choosenDate = parseDate(this.props.selectedDay);
+    const firstDayInRender = days[0];
+
+    const rowIndex = Math.trunc(firstDayInRender.diffDays(choosenDate) / 7);
+
+    this.horizontalScrollViewRef.scrollTo({
+      animated: false,
+      x: rowWidth * rowIndex,
+      y: 0
+    });
+  };
 
   updateMonth(day, doNotTriggerListeners) {
     if (
@@ -293,6 +317,7 @@ class Calendar extends Component {
         indicator = true;
       }
     }
+
     return (
       <View style={[this.style.container, this.props.style]}>
         <CalendarHeader
@@ -309,7 +334,18 @@ class Calendar extends Component {
           onPressArrowLeft={this.props.onPressArrowLeft}
           onPressArrowRight={this.props.onPressArrowRight}
         />
-        <View style={this.style.monthView}>{weeks}</View>
+        {this.props.horizontalWeeks ? (
+          <ScrollView
+            style={[this.style.monthView, { flex: 1 }]}
+            horizontal
+            pagingEnabled
+            ref={ref => (this.horizontalScrollViewRef = ref)}
+          >
+            {weeks}
+          </ScrollView>
+        ) : (
+          <View style={this.style.monthView}>{weeks}</View>
+        )}
       </View>
     );
   }
