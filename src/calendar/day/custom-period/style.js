@@ -1,5 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import * as defaultStyle from "../../../style";
+
+const { width } = Dimensions.get("window");
 
 const STYLESHEET_ID = "stylesheet.day.period";
 
@@ -8,7 +10,8 @@ export default function styleConstructor(theme = {}) {
   return StyleSheet.create({
     dayWrapper: {
       alignItems: "center",
-      alignSelf: "stretch"
+      alignSelf: "stretch",
+      width: (width - 30) / 7
     },
     background: {
       position: "absolute",
