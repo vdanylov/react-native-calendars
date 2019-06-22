@@ -12,14 +12,26 @@ class Day extends PureComponent {
     const {
       state,
       date,
-      marking: { selected, startingDay, endingDay, today, singleDay },
+      marking: {
+        selected,
+        startingDay,
+        endingDay,
+        today,
+        singleDay,
+        color,
+        disabled
+      },
       onPress
     } = this.props;
     const isSelectedInAnyOption =
       selected || startingDay || endingDay || today || singleDay;
 
+    const backgroundColor = {
+      backgroundColor: color ? color : null
+    };
     return (
       <TouchableOpacity
+        disabled={disabled}
         onPress={() => onPress(date.dateString)}
         style={this.style.dayWrapper}
       >
@@ -29,14 +41,16 @@ class Day extends PureComponent {
               this.style.background,
               selected && this.style.backgroundSelected,
               startingDay && this.style.backgroundStartingDay,
-              endingDay && this.style.backgroundEndingDay
+              endingDay && this.style.backgroundEndingDay,
+              !singleDay && backgroundColor
             ]}
           />
           <View
             style={[
               this.style.textWrapper,
               singleDay && this.style.textWrapperSingleDay,
-              today && this.style.textWrapperToday
+              today && this.style.textWrapperToday,
+              singleDay && backgroundColor
             ]}
           >
             <Text

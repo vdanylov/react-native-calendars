@@ -229,7 +229,7 @@ class Calendar extends Component {
   }
 
   getDateMarking(day) {
-    if (!this.props.markedDates) {
+    if (!this.props.markedDates && !this.props.blockedDates) {
       return false;
     }
     const dates =
