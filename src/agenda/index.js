@@ -12,8 +12,10 @@ import {VelocityTracker} from '../input';
 import {AGENDA_CALENDAR_KNOB} from '../testIDs';
 
 const HEADER_HEIGHT = 140;
+const HEADER_HEIGHT_ICONS = 160;
 const KNOB_HEIGHT = 24;
 const WEEK_ROW_HEIGHT = 49;
+const WEEK_ROW_HEIGHT_ICONS = 57;
 
 //Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
@@ -129,6 +131,10 @@ export default class AgendaView extends Component {
     this.generateMarkings = this.generateMarkings.bind(this);
     this.knobTracker = new VelocityTracker();
     this.state.scrollY.addListener(({ value }) => this.knobTracker.add(value));
+
+    //fixedHeights
+    this.rowHeight = props.withIcons ? WEEK_ROW_HEIGHT_ICONS : WEEK_ROW_HEIGHT;
+    this.headerHeight = props.withIcons ? HEADER_HEIGHT_ICONS : HEADER_HEIGHT;
   }
 
   calendarOffset() {
@@ -139,7 +145,7 @@ export default class AgendaView extends Component {
   }
 
   initialScrollPadPosition() {
-    return Math.max(0, this.viewHeight - HEADER_HEIGHT);
+    return Math.max(0, this.viewHeight - this.headerHeight);
   }
 
   setScrollPadPosition(y, animated) {
@@ -400,7 +406,7 @@ export default class AgendaView extends Component {
   }
 
   render() {
-    const agendaHeight = this.initialScrollPadPosition();
+    const agendaHeight = Math.max(0, this.viewHeight - this.headerHeight);
     const weekDaysNames = dateutils.weekDayNames(this.props.firstDay);
     const weekdaysStyle = [this.styles.weekdays];
 
@@ -430,8 +436,8 @@ export default class AgendaView extends Component {
 
     const shouldAllowDragging = !this.props.hideKnob && !this.state.calendarScrollable;
     const scrollPadPosition =
-      HEADER_HEIGHT +
-      (shouldAllowDragging ? 0 : WEEK_ROW_HEIGHT) /* * 5*/ -
+      this.headerHeight +
+      (shouldAllowDragging ? 0 : this.rowHeight) -
       KNOB_HEIGHT;
 
     const scrollPadStyle = {
