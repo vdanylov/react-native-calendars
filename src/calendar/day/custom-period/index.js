@@ -88,7 +88,6 @@ class Day extends PureComponent {
         {iconSource ? (
           <Image source={iconSource} style={{ marginTop: 5 }} />
         ) : (
-          {/* placeholder */}
           <View style={{ height: 18 }} />
         )}
       </Fragment>
