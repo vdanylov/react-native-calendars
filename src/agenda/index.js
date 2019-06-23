@@ -214,7 +214,7 @@ export default class AgendaView extends Component {
 
   onVisibleMonthsChange(months) {
     this.setState({
-      currentVisibleMonth: parseDate(months[0]).toString("MMMM")
+      currentVisibleMonth: parseDate(months[0]).toString("MMMM yyyy")
     });
     if (this.props.items && !this.state.firstResevationLoad) {
       clearTimeout(this.scrollTimeout);
