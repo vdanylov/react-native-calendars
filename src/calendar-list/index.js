@@ -209,6 +209,7 @@ class CalendarList extends Component {
   renderCalendar({ item }) {
     return (
       <CalendarListItem
+        topOffset={this.props.topOffset}
         withIcons={this.props.withIcons}
         selected={this.props.selected}
         horizontalWeeks={this.props.horizontalWeeks}
