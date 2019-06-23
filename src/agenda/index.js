@@ -182,6 +182,7 @@ export default class AgendaView extends Component {
 
     if (this.headerState !== "dragged") {
       const num = this.props.horizontal ? 0 : 300;
+
       this.toggledCalendar(this.props.horizontal);
       this.setScrollPadPosition(num, true);
       this.enableCalendarScrolling();
@@ -281,7 +282,7 @@ export default class AgendaView extends Component {
     this.setState({
       calendarScrollable: true
     });
-    this.toggledCalendar(true);
+
     // Enlarge calendarOffset here as a workaround on iOS to force repaint.
     // Otherwise the month after current one or before current one remains invisible.
     // The problem is caused by overflow: 'hidden' style, which we need for dragging
@@ -459,8 +460,7 @@ export default class AgendaView extends Component {
       width: 80,
       height: KNOB_HEIGHT,
       top: scrollPadPosition,
-      left: (this.viewWidth - 80) / 2,
-      backgroundColor: "red"
+      left: (this.viewWidth - 80) / 2
     };
 
     let knob = <View style={this.styles.knobContainer} />;
@@ -559,6 +559,7 @@ export default class AgendaView extends Component {
         </Animated.View>
         <Animated.ScrollView
           ref={c => (this.scrollPad = c)}
+          scrollEnabled={false}
           overScrollMode="never"
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -567,8 +568,8 @@ export default class AgendaView extends Component {
           scrollsToTop={false}
           onTouchStart={this.onTouchStart}
           onTouchEnd={this.onTouchEnd}
-          onScrollBeginDrag={this.onStartDrag}
-          onScrollEndDrag={this.onSnapAfterDrag}
+          // onScrollBeginDrag={this.onStartDrag}
+          // onScrollEndDrag={this.onSnapAfterDrag}
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}],
             {useNativeDriver: true}
