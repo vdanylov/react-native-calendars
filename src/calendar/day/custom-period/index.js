@@ -41,12 +41,15 @@ class Day extends PureComponent {
       },
       onPress
     } = this.props;
+    //state "disabled" for hideExtraDays option
+    const isExtraDay = state === "disabled";
     const isSelectedInAnyOption =
       selected || startingDay || endingDay || today || singleDay;
     const iconSource = this.getIconSource(icon);
     const backgroundColor = {
       backgroundColor: color ? color : null
     };
+
     return (
       <Fragment>
         <TouchableOpacity
@@ -78,7 +81,9 @@ class Day extends PureComponent {
                   isSelectedInAnyOption
                     ? this.style.textSelected
                     : this.style.textNotSelected,
-                  today && this.style.textToday
+                  today && this.style.textToday,
+                  withIcons && this.style.textSelected,
+                  isExtraDay && this.style.extraDay
                 ]}
               >
                 {date.day}

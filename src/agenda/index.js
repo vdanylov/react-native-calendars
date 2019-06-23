@@ -461,7 +461,7 @@ export default class AgendaView extends Component {
               selected={this.props.selected}
               horizontal
               pagingEnabled
-              hideExtraDays={false}
+              hideExtraDays={this.props.hideExtraDays}
               hideArrows={false}
               disableMonthChange={false}
               calendarWidth={this.viewWidth}
