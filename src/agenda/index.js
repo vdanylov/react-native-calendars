@@ -180,8 +180,10 @@ export default class AgendaView extends Component {
       this.knob.setNativeProps({style: {opacity: 1}});
     }
 
-    if (this.headerState === "touched") {
-      this.setScrollPadPosition(0, true);
+    if (this.headerState !== "dragged") {
+      const num = this.props.horizontal ? 0 : 300;
+      this.toggledCalendar(this.props.horizontal);
+      this.setScrollPadPosition(num, true);
       this.enableCalendarScrolling();
     }
 
@@ -189,6 +191,10 @@ export default class AgendaView extends Component {
   }
 
   onStartDrag() {
+    if (this.props.horizontal) {
+      this.toggledCalendar(true);
+    }
+
     this.headerState = "dragged";
     this.knobTracker.reset();
   }
@@ -202,13 +208,16 @@ export default class AgendaView extends Component {
     const maxY = this.initialScrollPadPosition();
     const snapY = projectedY > maxY / 2 ? maxY : 0;
     this.setScrollPadPosition(snapY, true);
+
     if (snapY === this.prevSnapY) return;
     this.prevSnapY = snapY;
     this.setScrollPadPosition(snapY, true);
     
     if (snapY === 0) {
+      this.toggledCalendar(true);
       this.enableCalendarScrolling();
     } else {
+      this.toggledCalendar(false);
       this._goBackOnCalendarClose();
     }
   }
@@ -263,15 +272,16 @@ export default class AgendaView extends Component {
       this.loadReservations(props);
     }
   }
-
+  toggledCalendar = bool => {
+    if (this.props.onCalendarToggled) {
+      this.props.onCalendarToggled(bool);
+    }
+  };
   enableCalendarScrolling() {
     this.setState({
       calendarScrollable: true
     });
-
-    if (this.props.onCalendarToggled) {
-      this.props.onCalendarToggled(true);
-    }
+    this.toggledCalendar(true);
     // Enlarge calendarOffset here as a workaround on iOS to force repaint.
     // Otherwise the month after current one or before current one remains invisible.
     // The problem is caused by overflow: 'hidden' style, which we need for dragging
@@ -390,8 +400,7 @@ export default class AgendaView extends Component {
         break;
       }
     }
-    console.log("scrollAmount", scrollAmount);
-    console.log("this.scrollAmount", this.scrollAmount);
+
     return scrollAmount;
   };
 
@@ -443,15 +452,15 @@ export default class AgendaView extends Component {
     const shouldAllowDragging = !this.props.hideKnob && !this.state.calendarScrollable;
     const scrollPadPosition =
       this.headerHeight +
-      (shouldAllowDragging ? 0 : this.rowHeight) -
+      (this.props.horizontal ? 0 : this.rowHeight * 5 - 15) -
       KNOB_HEIGHT;
-
     const scrollPadStyle = {
       position: "absolute",
       width: 80,
       height: KNOB_HEIGHT,
       top: scrollPadPosition,
-      left: (this.viewWidth - 80) / 2
+      left: (this.viewWidth - 80) / 2,
+      backgroundColor: "red"
     };
 
     let knob = <View style={this.styles.knobContainer} />;
