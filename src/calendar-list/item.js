@@ -28,6 +28,7 @@ class CalendarListItem extends Component {
     if (row.getTime) {
       return (
         <Calendar
+          withIcons={this.props.withIcons}
           selectedDay={this.props.selected}
           horizontalWeeks={this.props.horizontalWeeks}
           theme={this.props.theme}

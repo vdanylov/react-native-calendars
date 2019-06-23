@@ -443,6 +443,7 @@ export default class AgendaView extends Component {
             style={{ flex: 1, transform: [{ translateY: contentTranslate }] }}
           >
             <CalendarList
+              withIcons={this.props.withIcons}
               horizontalWeeks={this.props.horizontal}
               onLayout={() => {
                 this.calendar.scrollToDay(

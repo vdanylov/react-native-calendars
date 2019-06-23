@@ -218,6 +218,7 @@ class Calendar extends Component {
     return (
       <View style={{ flex: 1, alignItems: "center" }} key={id}>
         <DayComp
+          withIcons={this.props.withIcons}
           state={state}
           theme={this.props.theme}
           onPress={this.pressDay}
