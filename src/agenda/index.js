@@ -100,6 +100,11 @@ export default class AgendaView extends Component {
   constructor(props) {
     super(props);
 
+    //fixedHeights
+    this.rowHeight = props.withIcons ? WEEK_ROW_HEIGHT_ICONS : WEEK_ROW_HEIGHT;
+    this.headerHeight = props.withIcons ? HEADER_HEIGHT_ICONS : HEADER_HEIGHT;
+    this.scrollAmount = 0;
+
     this.styles = styleConstructor(props.theme);
 
     const windowSize = Dimensions.get('window');
@@ -131,10 +136,6 @@ export default class AgendaView extends Component {
     this.generateMarkings = this.generateMarkings.bind(this);
     this.knobTracker = new VelocityTracker();
     this.state.scrollY.addListener(({ value }) => this.knobTracker.add(value));
-
-    //fixedHeights
-    this.rowHeight = props.withIcons ? WEEK_ROW_HEIGHT_ICONS : WEEK_ROW_HEIGHT;
-    this.headerHeight = props.withIcons ? HEADER_HEIGHT_ICONS : HEADER_HEIGHT;
   }
 
   calendarOffset() {
@@ -376,16 +377,21 @@ export default class AgendaView extends Component {
   }
   countAnimationOffset = day => {
     let scrollAmount = 0;
-    //for horizontal list
-    // let week = 0;
-    // const days = dateutils.page(day, this.props.firstDay);
-    // for (let i = 0; i < days.length; i++) {
-    //   week = Math.floor(i / 7);
-    //   if (dateutils.sameDate(days[i], day)) {
-    //     scrollAmount += WEEK_ROW_HEIGHT * 2 * week + 10;
-    //     break;
-    //   }
-    // }
+    //    for horizontal list
+    let week = 0;
+    this.scrollAmount = 0;
+    const days = dateutils.page(day, this.props.firstDay);
+    for (let i = 0; i < days.length; i++) {
+      week = Math.floor(i / 7);
+      if (dateutils.sameDate(days[i], day)) {
+        scrollAmount += (this.rowHeight + 9) * 2 * week;
+        this.scrollAmount += scrollAmount;
+
+        break;
+      }
+    }
+    console.log("scrollAmount", scrollAmount);
+    console.log("this.scrollAmount", this.scrollAmount);
     return scrollAmount;
   };
 
@@ -472,6 +478,7 @@ export default class AgendaView extends Component {
         <Animated.View style={headerStyle}>
           <Animated.View style={{flex:1, transform: [{translateY: contentTranslate}]}}>
             <CalendarList
+              topOffset={this.scrollAmount}
               withIcons={this.props.withIcons}
               horizontalWeeks={this.props.horizontal}
               onLayout={() => {

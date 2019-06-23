@@ -217,6 +217,7 @@ class CalendarList extends Component {
     return (
       <CalendarListItem
         testID={`${this.props.testID}_${item}`}
+        topOffset={this.props.topOffset}
         withIcons={this.props.withIcons}
         selected={this.props.selected}
         scrollToMonth={this.scrollToMonth.bind(this)}

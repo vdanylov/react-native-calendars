@@ -329,7 +329,10 @@ class Calendar extends Component {
     }
 
     return (
-      <View style={this.style.week} key={id}>
+      <View
+        style={[this.style.week, { height: this.props.withIcons ? 52 : 34 }]}
+        key={id}
+      >
         {week}
       </View>
     );
@@ -358,7 +361,6 @@ class Calendar extends Component {
         indicator = true;
       }
     }
-
     return (
       <View
         style={[this.style.container, this.props.style]}
@@ -387,7 +389,14 @@ class Calendar extends Component {
         />
         {this.props.horizontalWeeks ? (
           <ScrollView
-            style={[this.style.monthView, { flex: 1 }]}
+            style={[
+              this.style.monthView,
+              {
+                flex: 1,
+                marginTop: this.props.topOffset / 2,
+                paddingBottom: 100
+              }
+            ]}
             horizontal
             pagingEnabled
             ref={ref => (this.horizontalScrollViewRef = ref)}
