@@ -70,6 +70,9 @@ export default function styleConstructor(theme = {}) {
       fontSize: 18,
       fontWeight: "700"
     },
+    extraDay: {
+      color: "rgb(155,154,163)"
+    },
     ...(theme[STYLESHEET_ID] || {})
   });
 }
