@@ -120,8 +120,6 @@ export default class AgendaView extends Component {
     this.onScrollPadLayout = this.onScrollPadLayout.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.onStartDrag = this.onStartDrag.bind(this);
-    this.onSnapAfterDrag = this.onSnapAfterDrag.bind(this);
     this.generateMarkings = this.generateMarkings.bind(this);
     this.knobTracker = new VelocityTracker();
     this.state.scrollY.addListener(({ value }) => this.knobTracker.add(value));
@@ -146,6 +144,7 @@ export default class AgendaView extends Component {
     // When user touches knob, the actual component that receives touch events is a ScrollView.
     // It needs to be scrolled to the bottom, so that when user moves finger downwards,
     // scroll position actually changes (it would stay at 0, when scrolled to the top).
+
     this.setScrollPadPosition(this.initialScrollPadPosition(), false);
     // delay rendering calendar in full height because otherwise it still flickers sometimes
     setTimeout(() => this.setState({ calendarIsReady: true }), 0);
@@ -169,45 +168,20 @@ export default class AgendaView extends Component {
       this.knob.setNativeProps({ style: { opacity: 1 } });
     }
 
-    if (this.headerState !== "dragged") {
-      const num = this.props.horizontal ? 0 : 300;
-
-      this.toggledCalendar(this.props.horizontal);
-      this.setScrollPadPosition(num, true);
-      this.enableCalendarScrolling();
+    const num = this.props.horizontal ? 0 : 300;
+    if (!this.props.horizontal && this.calendar) {
+      this.calendar.scrollToDay(
+        this.state.selectedDay,
+        this.calendarOffset() + 1,
+        true
+      );
     }
+    this.toggledCalendar(this.props.horizontal);
+
+    this.setScrollPadPosition(num, true);
+    this.enableCalendarScrolling();
 
     this.headerState = "idle";
-  }
-
-  onStartDrag() {
-    if (this.props.horizontal) {
-      this.toggledCalendar(true);
-    }
-
-    this.headerState = "dragged";
-    this.knobTracker.reset();
-  }
-
-  onSnapAfterDrag(e) {
-    // on Android onTouchEnd is not called if dragging was started
-    this.onTouchEnd();
-    const currentY = e.nativeEvent.contentOffset.y;
-    this.knobTracker.add(currentY);
-    const projectedY = currentY + this.knobTracker.estimateSpeed() * 250; /*ms*/
-    const maxY = this.initialScrollPadPosition();
-    const snapY = projectedY > maxY / 2 ? maxY : 0;
-    this.setScrollPadPosition(snapY, true);
-
-    if (snapY === this.prevSnapY) return;
-    this.prevSnapY = snapY;
-    if (snapY === 0) {
-      this.toggledCalendar(true);
-      this.enableCalendarScrolling();
-    } else {
-      this.toggledCalendar(false);
-      this._goBackOnCalendarClose();
-    }
   }
 
   onVisibleMonthsChange(months) {
@@ -278,11 +252,6 @@ export default class AgendaView extends Component {
     // in CalendarList listView, but that might impact performance when scrolling
     // month list in expanded CalendarList.
     // Further info https://github.com/facebook/react-native/issues/1831
-    this.calendar.scrollToDay(
-      this.state.selectedDay,
-      this.calendarOffset() + 1,
-      true
-    );
   }
 
   _chooseDayFromCalendar(d) {
@@ -317,6 +286,7 @@ export default class AgendaView extends Component {
         topDay: day.clone()
       });
     }
+
     this.setScrollPadPosition(this.initialScrollPadPosition(), true);
     this.calendar.scrollToDay(day, this.calendarOffset(), true);
     if (this.props.loadItemsForMonth) {
