@@ -12,17 +12,17 @@ export default function platformStyles(appStyle) {
       left: 0,
       right: 0,
       top: 0,
-      marginLeft: 15,
-      marginRight: 15,
       paddingTop: 15,
-      paddingBottom: 7,
+      paddingBottom: 15,
       alignItems: "center",
       backgroundColor: appStyle.calendarBackground
     },
     weekdaysWrapper: {
       flexDirection: "row",
       justifyContent: "space-around",
-      width: "100%"
+      width: "100%",
+      paddingLeft: 15,
+      paddingRight: 15
     }
   };
 }
