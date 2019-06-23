@@ -466,6 +466,7 @@ export default class AgendaView extends Component {
         <Animated.View style={headerStyle}>
           <Animated.View style={{flex:1, transform: [{translateY: contentTranslate}]}}>
             <CalendarList
+              withIcons={this.props.withIcons}
               horizontalWeeks={this.props.horizontal}
               onLayout={() => {
                 this.calendar.scrollToDay(

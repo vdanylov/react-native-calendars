@@ -63,6 +63,7 @@ class CalendarListItem extends Component {
       return (
         <Calendar
           testID={`${this.props.testID}_${row}`}
+          withIcons={this.props.withIcons}
           selectedDay={this.props.selected}
           horizontalWeeks={this.props.horizontalWeeks}
           theme={this.props.theme}

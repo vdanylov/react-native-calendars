@@ -28,6 +28,7 @@ class Day extends PureComponent {
     const {
       state,
       date,
+      withIcons,
       marking: {
         selected,
         startingDay,
@@ -85,10 +86,8 @@ class Day extends PureComponent {
             </View>
           </View>
         </TouchableOpacity>
-        {iconSource ? (
-          <Image source={iconSource} style={{ marginTop: 5 }} />
-        ) : (
-          <View style={{ height: 18 }} />
+        {withIcons && (
+          <Image source={iconSource} style={{ marginTop: 5, height: 13 }} />
         )}
       </Fragment>
     );

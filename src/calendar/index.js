@@ -227,6 +227,7 @@ class Calendar extends Component {
       <View style={{ flex: 1, alignItems: "center" }} key={id}>
         <DayComp
           testID={`${SELECT_DATE_SLOT}-${dateAsObject.dateString}`}
+          withIcons={this.props.withIcons}
           state={state}
           theme={this.props.theme}
           onPress={this.pressDay}
