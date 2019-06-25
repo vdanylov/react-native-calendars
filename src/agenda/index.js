@@ -535,14 +535,21 @@ export default class AgendaView extends Component {
               numberOfLines={1}
             />
           )}
-
-          <Text
-            allowFontScaling={false}
-            numberOfLines={1}
-            style={this.styles.monthName}
-          >
-            {this.state.currentVisibleMonth}
-          </Text>
+          <View style={this.styles.headerWrapper}>
+            <View style={{ width: 32 }} />
+            <Text
+              allowFontScaling={false}
+              numberOfLines={1}
+              style={this.styles.monthName}
+            >
+              {this.state.currentVisibleMonth}
+            </Text>
+            {this.props.rightButton ? (
+              this.props.rightButton
+            ) : (
+              <View style={{ width: 32 }} />
+            )}
+          </View>
           <View style={this.styles.weekdaysWrapper}>
             {weekDaysNames.map((day, index) => (
               <Text

@@ -47,6 +47,13 @@ export default function styleConstructor(theme = {}) {
       fontSize: 24,
       color: "black"
     },
+    headerWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      paddingHorizontal: 11
+    },
     ...(theme[STYLESHEET_ID] || {})
   });
 }
