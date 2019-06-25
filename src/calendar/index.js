@@ -97,7 +97,9 @@ class Calendar extends Component {
     this.shouldComponentUpdate = shouldComponentUpdate;
   }
   componentDidMount() {
-    this.scrollToChoosenDay();
+    if (this.horizontalScrollViewRef) {
+      this.scrollToChoosenDay();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
