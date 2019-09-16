@@ -47,7 +47,7 @@ class Day extends PureComponent {
       selected || startingDay || endingDay || today || singleDay;
     const iconSource = this.getIconSource(icon);
     const backgroundColor = {
-      backgroundColor: color ? color : null
+      backgroundColor: color ? color : ""
     };
 
     return (
