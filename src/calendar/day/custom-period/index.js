@@ -35,6 +35,7 @@ class Day extends PureComponent {
         startingDay,
         endingDay,
         today,
+        chosen,
         singleDay,
         color,
         disabled,
@@ -45,12 +46,12 @@ class Day extends PureComponent {
     // state "disabled" for hideExtraDays option
     const isExtraDay = state === "disabled";
     const isSelectedInAnyOption =
-      selected || startingDay || endingDay || today || singleDay;
+      selected || startingDay || endingDay || today || chosen || singleDay;
     const iconSource = this.getIconSource(icon);
     const backgroundColor = {
       backgroundColor: color || ""
     };
-
+    // temporary today and chosen days are styled same
     return (
       <>
         <TouchableOpacity
@@ -74,7 +75,7 @@ class Day extends PureComponent {
                 singleDay && this.style.textWrapperSingleDay,
                 singleDay && backgroundColor,
                 today && this.style.textWrapperToday,
-                selected && this.style.textWrapperToday
+                chosen && this.style.textWrapperToday
               ]}
             >
               <Text
@@ -83,11 +84,10 @@ class Day extends PureComponent {
                   isSelectedInAnyOption
                     ? this.style.textSelected
                     : this.style.textNotSelected,
-
                   withIcons && this.style.textSelected,
                   isExtraDay && this.style.extraDay,
                   today && this.style.textToday,
-                  selected && this.style.textToday
+                  chosen && this.style.textToday
                 ]}
               >
                 {date.day}

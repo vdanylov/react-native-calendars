@@ -16,7 +16,7 @@ const KNOB_HEIGHT = 24;
 const WEEK_ROW_HEIGHT = 49;
 const WEEK_ROW_HEIGHT_ICONS = 57;
 
-//Fallback when RN version is < 0.44
+// Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
 
 export default class AgendaView extends Component {
@@ -91,7 +91,7 @@ export default class AgendaView extends Component {
   constructor(props) {
     super(props);
 
-    //fixedHeights
+    // fixedHeights
     this.rowHeight = props.withIcons ? WEEK_ROW_HEIGHT_ICONS : WEEK_ROW_HEIGHT;
     this.headerHeight = props.withIcons ? HEADER_HEIGHT_ICONS : HEADER_HEIGHT;
     this.scrollAmount = 0;
@@ -126,9 +126,9 @@ export default class AgendaView extends Component {
   }
 
   calendarOffset() {
-    //if vertical
-    //90 - this.viewHeight/2
-    //if horizontal
+    // if vertical
+    // 90 - this.viewHeight/2
+    // if horizontal
     return 0;
   }
 
@@ -234,11 +234,13 @@ export default class AgendaView extends Component {
       this.loadReservations(props);
     }
   }
+
   toggledCalendar = bool => {
     if (this.props.onCalendarToggled) {
       this.props.onCalendarToggled(bool);
     }
   };
+
   enableCalendarScrolling() {
     this.setState({
       calendarScrollable: true
@@ -257,6 +259,7 @@ export default class AgendaView extends Component {
   _chooseDayFromCalendar(d) {
     this.chooseDay(d, !this.state.calendarScrollable);
   }
+
   _goBackOnCalendarClose = () => {
     this.setState(
       {
@@ -271,6 +274,7 @@ export default class AgendaView extends Component {
       }
     );
   };
+
   chooseDay(d, optimisticScroll) {
     const day = parseDate(d);
     this.setState({
@@ -332,6 +336,7 @@ export default class AgendaView extends Component {
       this.props.onDayChange(xdateToData(newDate));
     }
   }
+
   countAnimationOffset = day => {
     let scrollAmount = 0;
     //    for horizontal list
@@ -364,7 +369,7 @@ export default class AgendaView extends Component {
     const key = this.state.selectedDay.toString("yyyy-MM-dd");
     return {
       ...markings,
-      [key]: { ...(markings[key] || {}), ...{ selected: true } }
+      [key]: { ...(markings[key] || {}), ...{ chosen: true } }
     };
   }
 
