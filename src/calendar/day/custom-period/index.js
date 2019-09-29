@@ -48,9 +48,11 @@ class Day extends PureComponent {
     const isSelectedInAnyOption =
       selected || startingDay || endingDay || today || chosen || singleDay;
     const iconSource = this.getIconSource(icon);
-    const backgroundColor = {
-      backgroundColor: color || ""
-    };
+    const backgroundColor = color
+      ? {
+          backgroundColor: color
+        }
+      : null;
     // temporary today and chosen days are styled same
     return (
       <>
@@ -66,7 +68,7 @@ class Day extends PureComponent {
                 selected && !singleDay && this.style.backgroundSelected,
                 startingDay && this.style.backgroundStartingDay,
                 endingDay && this.style.backgroundEndingDay,
-                !singleDay && backgroundColor
+                selected && !singleDay && backgroundColor
               ]}
             />
             <View
