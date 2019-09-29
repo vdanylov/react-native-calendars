@@ -7,6 +7,7 @@ class Day extends PureComponent {
     super(props);
     this.style = styleConstructor(props.theme);
   }
+
   getIconSource = icon => {
     switch (icon) {
       case "PASTDAY":
@@ -41,17 +42,17 @@ class Day extends PureComponent {
       },
       onPress
     } = this.props;
-    //state "disabled" for hideExtraDays option
+    // state "disabled" for hideExtraDays option
     const isExtraDay = state === "disabled";
     const isSelectedInAnyOption =
       selected || startingDay || endingDay || today || singleDay;
     const iconSource = this.getIconSource(icon);
     const backgroundColor = {
-      backgroundColor: color ? color : ""
+      backgroundColor: color || ""
     };
 
     return (
-      <Fragment>
+      <>
         <TouchableOpacity
           disabled={disabled}
           onPress={() => onPress(date.dateString)}
@@ -61,7 +62,7 @@ class Day extends PureComponent {
             <View
               style={[
                 this.style.background,
-                selected && this.style.backgroundSelected,
+                selected && !singleDay && this.style.backgroundSelected,
                 startingDay && this.style.backgroundStartingDay,
                 endingDay && this.style.backgroundEndingDay,
                 !singleDay && backgroundColor
@@ -71,8 +72,9 @@ class Day extends PureComponent {
               style={[
                 this.style.textWrapper,
                 singleDay && this.style.textWrapperSingleDay,
+                singleDay && backgroundColor,
                 today && this.style.textWrapperToday,
-                singleDay && backgroundColor
+                selected && this.style.textWrapperToday
               ]}
             >
               <Text
@@ -81,9 +83,11 @@ class Day extends PureComponent {
                   isSelectedInAnyOption
                     ? this.style.textSelected
                     : this.style.textNotSelected,
-                  today && this.style.textToday,
+
                   withIcons && this.style.textSelected,
-                  isExtraDay && this.style.extraDay
+                  isExtraDay && this.style.extraDay,
+                  today && this.style.textToday,
+                  selected && this.style.textToday
                 ]}
               >
                 {date.day}
@@ -94,7 +98,7 @@ class Day extends PureComponent {
         {withIcons && (
           <Image source={iconSource} style={{ marginTop: 5, height: 13 }} />
         )}
-      </Fragment>
+      </>
     );
   }
 }
