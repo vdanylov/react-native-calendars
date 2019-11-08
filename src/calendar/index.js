@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ViewPropTypes, ScrollView, Dimensions } from "react-native";
+import { View, ViewPropTypes, ScrollView, Dimensions, Platform } from "react-native";
 import PropTypes from "prop-types";
 
 import XDate from "xdate";
@@ -114,9 +114,16 @@ class Calendar extends Component {
       });
     }
   }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (!prevProps.horizontalWeeks && this.props.horizontalWeeks) {
-      this.scrollToChoosenDay();
+    if(Platform.OS === 'ios'){
+      if (!prevProps.horizontalWeeks && this.props.horizontalWeeks) {
+        this.scrollToChoosenDay();
+      }
+    } else {
+      if(this.horizontalScrollViewRef){
+        this.scrollToChoosenDay();
+      }
     }
   }
 

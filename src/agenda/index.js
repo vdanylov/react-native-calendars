@@ -346,7 +346,7 @@ export default class AgendaView extends Component {
     for (let i = 0; i < days.length; i++) {
       week = Math.floor(i / 7);
       if (dateutils.sameDate(days[i], day)) {
-        scrollAmount += (this.rowHeight + 9) * 2 * week;
+        scrollAmount += (this.rowHeight + 9) * 2;
         this.scrollAmount += scrollAmount;
 
         break;
