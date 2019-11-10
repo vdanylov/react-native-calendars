@@ -10,15 +10,17 @@ export default function styleConstructor(theme = {}) {
   return StyleSheet.create({
     dayWrapper: {
       alignItems: "center",
+      justifyContent: "center",
       alignSelf: "stretch",
-      width: (width - 30) / 7
+      width: (width - 30) / 7,
+      height: 36,
     },
     background: {
       position: "absolute",
       right: 0,
       top: 0,
       left: 0,
-      height: 34,
+      height: 36,
       backgroundColor: "white"
     },
     backgroundSelected: {
@@ -35,8 +37,8 @@ export default function styleConstructor(theme = {}) {
       borderTopRightRadius: 20
     },
     textWrapper: {
-      width: 34,
-      height: 34,
+      width: 32,
+      height: 32,
       alignItems: "center",
       justifyContent: "center"
     },
