@@ -85,7 +85,9 @@ export default class AgendaView extends Component {
     // Set this true while waiting for new data from a refresh.
     refreshing: PropTypes.bool,
     // Display loading indicador. Default = false
-    displayLoadingIndicator: PropTypes.bool
+    displayLoadingIndicator: PropTypes.bool,
+    // Format of visible month
+    currentVisibleMonthFormat: PropTypes.string
   };
 
   constructor(props) {
@@ -185,9 +187,12 @@ export default class AgendaView extends Component {
   }
 
   onVisibleMonthsChange(months) {
-    this.setState({
-      currentVisibleMonth: parseDate(months[0]).toString("MMMM yyyy")
-    });
+    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
+    if(!this.state.currentVisibleMonth){
+      this.setState({
+        currentVisibleMonth: parseDate(months[0]).toString(currentVisibleMonthFormat)
+      });
+    }
     if (this.props.items && !this.state.firstResevationLoad) {
       clearTimeout(this.scrollTimeout);
       this.scrollTimeout = setTimeout(() => {
@@ -276,10 +281,12 @@ export default class AgendaView extends Component {
   };
 
   chooseDay(d, optimisticScroll) {
+    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
     const day = parseDate(d);
     this.setState({
       calendarScrollable: false,
       selectedDay: day.clone(),
+      currentVisibleMonth: day.toString(currentVisibleMonthFormat),
       animationOffset: this.countAnimationOffset(day.clone())
     });
     if (this.props.onCalendarToggled) {
@@ -324,11 +331,13 @@ export default class AgendaView extends Component {
   }
 
   onDayChange(day) {
+    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
     const newDate = parseDate(day);
     const withAnimation = dateutils.sameMonth(newDate, this.state.selectedDay);
     this.calendar.scrollToDay(day, this.calendarOffset(), withAnimation);
     this.setState({
       selectedDay: newDate,
+      currentVisibleMonth: newDate.toString(currentVisibleMonthFormat),
       animationOffset: this.countAnimationOffset(newDate)
     });
 
