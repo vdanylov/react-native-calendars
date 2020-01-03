@@ -85,7 +85,9 @@ export default class AgendaView extends Component {
     // Set this true while waiting for new data from a refresh.
     refreshing: PropTypes.bool,
     // Display loading indicador. Default = false
-    displayLoadingIndicator: PropTypes.bool
+    displayLoadingIndicator: PropTypes.bool,
+    // Format of visible month
+    currentVisibleMonthFormat: PropTypes.string
   };
 
   constructor(props) {
@@ -185,8 +187,9 @@ export default class AgendaView extends Component {
   }
 
   onVisibleMonthsChange(months) {
+    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
     this.setState({
-      currentVisibleMonth: parseDate(months[0]).toString("MMMM yyyy")
+      currentVisibleMonth: parseDate(months[0]).toString(currentVisibleMonthFormat)
     });
     if (this.props.items && !this.state.firstResevationLoad) {
       clearTimeout(this.scrollTimeout);
@@ -276,10 +279,12 @@ export default class AgendaView extends Component {
   };
 
   chooseDay(d, optimisticScroll) {
+    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
     const day = parseDate(d);
     this.setState({
       calendarScrollable: false,
       selectedDay: day.clone(),
+      currentVisibleMonth: day.toString(currentVisibleMonthFormat),
       animationOffset: this.countAnimationOffset(day.clone())
     });
     if (this.props.onCalendarToggled) {
