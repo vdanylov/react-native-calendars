@@ -17,6 +17,8 @@ const KNOB_HEIGHT = 24;
 const WEEK_ROW_HEIGHT = 49;
 const WEEK_ROW_HEIGHT_ICONS = 57;
 
+const shortMonthYearFormat = "MMMM yyyy";
+
 // Fallback when RN version is < 0.44
 const viewPropTypes = ViewPropTypes || View.propTypes;
 
@@ -230,12 +232,9 @@ export default class AgendaView extends Component {
   }
 
   onVisibleMonthsChange(months) {
-    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
-    if(!this.state.currentVisibleMonth){
-      this.setState({
-        currentVisibleMonth: parseDate(months[0]).toString(currentVisibleMonthFormat)
-      });
-    }
+    this.setState({
+      currentVisibleMonth: months[0]
+    });
     if (this.props.items && !this.state.firstResevationLoad) {
       clearTimeout(this.scrollTimeout);
       this.scrollTimeout = setTimeout(() => {
@@ -329,9 +328,9 @@ export default class AgendaView extends Component {
     
     this.setState({
       calendarScrollable: false,
-      selectedDay: day.clone(),
-      currentVisibleMonth: day.toString(currentVisibleMonthFormat),
-      animationOffset: this.countAnimationOffset(day.clone())
+      selectedDay: day,
+      currentVisibleMonth: day,
+      animationOffset: this.countAnimationOffset(day)
     });
 
     if (this.props.onCalendarToggled) {
@@ -340,7 +339,7 @@ export default class AgendaView extends Component {
 
     if (!optimisticScroll) {
       this.setState({
-        topDay: day.clone()
+        topDay: day
       });
     }
 
@@ -383,14 +382,13 @@ export default class AgendaView extends Component {
   }
 
   onDayChange(day) {
-    const { currentVisibleMonthFormat = 'ddd, dd MMMM yyyy' } = this.props;
-    const newDate = parseDate(day);
+    const newDate = parseDate(day).clone();
     const withAnimation = dateutils.sameMonth(newDate, this.state.selectedDay);
     
     this.calendar.scrollToDay(day, this.calendarOffset(), withAnimation);
     this.setState({
       selectedDay: newDate,
-      currentVisibleMonth: newDate.toString(currentVisibleMonthFormat),
+      currentVisibleMonth: newDate,
       animationOffset: this.countAnimationOffset(newDate)
     });
 
@@ -556,7 +554,7 @@ export default class AgendaView extends Component {
               numberOfLines={1}
               style={this.styles.monthName}
             >
-              {this.state.currentVisibleMonth}
+              {this.state.currentVisibleMonth ? this.props.horizontal ? parseDate(this.state.selectedDay).toString("ddd, dd MMMM yyyy") : parseDate(this.state.currentVisibleMonth).toString(shortMonthYearFormat) : ""}
             </Text>
             {this.props.rightButton ? (
               this.props.rightButton
