@@ -39,7 +39,9 @@ class CalendarList extends Component {
     // Whether the scroll is horizontal
     horizontal: PropTypes.bool,
     // Dynamic calendar height
-    calendarHeight: PropTypes.number
+    calendarHeight: PropTypes.number,
+    // In case of calendar in scroll view
+    nestedScrollEnabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -51,7 +53,8 @@ class CalendarList extends Component {
     showScrollIndicator: false,
     scrollEnabled: true,
     scrollsToTop: false,
-    removeClippedSubviews: Platform.OS === "android" ? false : true
+    removeClippedSubviews: Platform.OS === "android" ? false : true,
+    nestedScrollEnabled: true
   };
 
   constructor(props) {
@@ -246,6 +249,7 @@ class CalendarList extends Component {
     return (
       <FlatList
         scrollEnabled
+        nestedScrollEnabled={this.props.nestedScrollEnabled}
         onLayout={this.onLayout}
         ref={c => (this.listView = c)}
         //scrollEventThrottle={1000}
