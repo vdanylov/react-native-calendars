@@ -153,7 +153,7 @@ export default class AgendaView extends Component {
   }
 
   setScrollPadPosition(y, animated) {
-    this.scrollPad.getNode().scrollTo({x: 0, y, animated});
+    this.scrollPad.scrollTo({x: 0, y, animated});
   }
 
   onScrollPadLayout() {
@@ -269,7 +269,7 @@ export default class AgendaView extends Component {
     this.loadReservations(this.props);
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this._isMounted = false;
   }
 
@@ -432,7 +432,7 @@ export default class AgendaView extends Component {
     const key = this.state.selectedDay.toString('yyyy-MM-dd');
     return {
       ...markings,
-      [key]: {...(markings[key] || {}), ...{selected: true}},
+      [key]: {...(markings[key] || {}), ...{chosen: true}},
     };
   }
 
