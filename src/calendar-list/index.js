@@ -111,8 +111,8 @@ class CalendarList extends Component {
        * If `this.pastScrollRange` is `undefined` it's equal to `false` or 0 in next condition.
        */
       if (
-        (this.props.pastScrollRange - 10 <= i &&
-          i <= this.props.pastScrollRange + 10) ||
+        (this.props.pastScrollRange - 2 <= i &&
+          i <= this.props.pastScrollRange + 2) ||
         (!this.props.pastScrollRange && i <= this.props.pastScrollRange + 2)
       ) {
         rows.push(rangeDate);

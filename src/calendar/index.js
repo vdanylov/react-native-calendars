@@ -134,14 +134,8 @@ class Calendar extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (Platform.OS === 'ios') {
-      if (!prevProps.horizontalWeeks && this.props.horizontalWeeks) {
-        this.scrollToChoosenDay();
-      }
-    } else {
-      if (this.horizontalScrollViewRef) {
-        this.scrollToChoosenDay();
-      }
+    if(this.horizontalScrollViewRef){
+      this.scrollToChoosenDay();
     }
   }
 
