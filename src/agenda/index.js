@@ -12,7 +12,7 @@ import {VelocityTracker} from '../input';
 import {AGENDA_CALENDAR_KNOB} from '../testIDs';
 
 const HEADER_HEIGHT = 140;
-const HEADER_HEIGHT_ICONS = 160;
+const HEADER_HEIGHT_ICONS = 162;
 const KNOB_HEIGHT = 24;
 const WEEK_ROW_HEIGHT = 49;
 const WEEK_ROW_HEIGHT_ICONS = 57;
