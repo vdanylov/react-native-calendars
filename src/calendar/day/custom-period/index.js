@@ -77,7 +77,7 @@ class Day extends PureComponent {
                 singleDay && this.style.textWrapperSingleDay,
                 singleDay && backgroundColor,
                 today && this.style.textWrapperToday,
-                chosen && this.style.textWrapperToday
+                chosen && this.style.textWrapperChosen
               ]}
             >
               <Text
@@ -89,7 +89,7 @@ class Day extends PureComponent {
                   withIcons && this.style.textSelected,
                   isExtraDay && this.style.extraDay,
                   today && this.style.textToday,
-                  chosen && this.style.textToday
+                  chosen && this.style.textChosen
                 ]}
               >
                 {date.day}
